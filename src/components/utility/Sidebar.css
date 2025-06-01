@@ -1,0 +1,19 @@
+/* Sidebar.css */
+.sidebar-container {
+  scrollbar-width: thin;
+  scrollbar-color: #d2b48c #f5f5f5; /* Light brown thumb on light gray track */
+}
+
+.sidebar-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar-container::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+
+.sidebar-container::-webkit-scrollbar-thumb {
+  background-color: #d2b48c; /* Light brown color */
+  border-radius: 4px;
+  border: 1px solid #c0a070; /* Slightly darker brown border */
+}
