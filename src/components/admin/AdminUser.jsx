@@ -90,7 +90,7 @@ const AdminUser = () => {
     <div className="min-h-screen bg-gradient-to-b from-white to-blue-300 font-sans text-white">
       <div className="container mx-auto px-4 py-20">
         <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-2xl sm:text-3xl font-bold font-heading">Tableau de bord des utilisateurs</h1>
+          <h1 className="text-2xl text-purple-900 sm:text-3xl font-bold font-heading">Tableau de bord des utilisateurs</h1>
           <Link
             to="/admin/user/add"
             className="inline-block rounded-md bg-blue-500 px-4 py-2 text-sm font-medium text-white shadow hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 transition-colors"

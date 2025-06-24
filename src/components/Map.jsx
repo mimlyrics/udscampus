@@ -70,7 +70,7 @@ const themes = {
 
 const Map = () => {
   const [weather, setWeather] = useState(null);
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState('fr');
   const [routingEnabled, setRoutingEnabled] = useState(false);
   const [startPoint, setStartPoint] = useState(null);
   const [routeControl, setRouteControl] = useState(null);
@@ -83,7 +83,15 @@ const Map = () => {
   const [currentFont, setCurrentFont] = useState('sans');
   const mapRef = useRef();
   const t = translations[lang];
+  console.log(t);
 
+  console.log(translations);
+  const userLocation = JSON.parse(localStorage.getItem("userLocation"));
+  const {lat, lng} = userLocation;
+  console.log(userLocation, lat, lng);
+
+  const [errRoutingMessage, setErrRoutingMessage] = useState(false);
+  
   useEffect(() => {
     // Fetch current weather (unchanged)
     axios
@@ -155,7 +163,7 @@ const Map = () => {
   return (
     <div>
 
-    
+     {errRoutingMessage && <div className=' absolute z-50 left-[10%] md:left-[50%] md:top-[10%] text-center text-red-700 text-lg underline animate-bounce'>{errRoutingMessage}</div>}
     <motion.div
       className={`
         flex 
@@ -171,6 +179,8 @@ const Map = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
     >
+
+     
       {/* === Sidebar === */}
       <Sidebar
         selectedBuilding={selectedBuilding}
@@ -179,8 +189,6 @@ const Map = () => {
         selectedFaculty={selectedFaculty}
         setSelectedFaculty={setSelectedFaculty}
         theme={theme}
-        lang={lang}
-        t={t}
       />
 
       {/* === Map Wrapper === */}
@@ -304,17 +312,17 @@ const Map = () => {
             />
           )}
 
-          {routingEnabled && <RoutingControl />}
+          {routingEnabled && <RoutingControl errRoutingMessage={errRoutingMessage} setErrRoutingMessage={setErrRoutingMessage} userLocation={userLocation} />}
         </MapContainer>
 
         {/* === Desktop Legend (hidden on mobile) === */}
         <motion.div
           className={`
-            absolute top-20 right-4 
+            absolute z-50 top-20 right-4 
             hidden md:block 
             ${theme.legendBg} ${theme.legendText} 
             p-4 rounded-lg border-l-4 border-purple-500 
-            max-w-xs z-10 shadow-xl 
+            max-w-xs shadow-xl 
             ${fontStyles[currentFont]}
           `}
           initial={{ x: 100, opacity: 0 }}
@@ -358,15 +366,17 @@ const Map = () => {
         </div>
 
       </div>
+
+
+
     </motion.div>
         {/* === Desktop Legend (hidden on mobile) === */}
         <motion.div
           className={`
-              
             md:hidden 
             ${theme.legendBg} ${theme.legendText} 
             p-4 rounded-lg border-l-4 border-purple-500 
-            max-w-xs z-10 shadow-xl 
+            max-w-xs z-50 shadow-xl 
             ${fontStyles[currentFont]}
           `}
           initial={{ x: 100, opacity: 0 }}
@@ -386,6 +396,7 @@ const Map = () => {
               </div>
             ))}
         </motion.div>
+
     </div>
   );
 };

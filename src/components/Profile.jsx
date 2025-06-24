@@ -16,7 +16,7 @@ const PASSWORD_ERR_MSG = password. atleast(one lowercase, uppercase letter, digi
 const MOBILENO_ERR_MSG = mobile number. must be 9 digits */
 import { useUpdateUserMutation } from "../slices/auth/usersApiSlice";
 import axios from "./api/axios";
-import { useMimlyrics } from "./context/AppProvider";
+import { useCampus } from "./context/AppProvider";
 const USERS_URL = "/api/v1/users/users";
 const Profile = () => {
   console.log("Pic");
@@ -54,7 +54,7 @@ const Profile = () => {
     setValidCode(result);
   }, [codex]);
 
-  const {isActiveModalNavbar} = useMimlyrics();
+  const {isActiveModalNavbar} = useCampus();
 
   //console.log(firstNamex, lastNamex);
   

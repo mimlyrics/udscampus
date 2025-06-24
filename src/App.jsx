@@ -21,10 +21,7 @@ import RequireAdmin from "./components/authMiddleware/RequireAdmin";
 import RequireEditor from "./components/authMiddleware/RequireEditor";
 import ErrorMiddleware from "./components/authMiddleware/ErrorMiddleware";
 import Assistance from "./components/policy/Assistance";
-import About from "./components/About";
-import Privacy from "./components/policy/Privacy";
-import Termsofuse from "./components/policy/Termsofuse";
-import Cookiepolicy from "./components/policy/Cookiepolicy";
+
 import Help from "./components/setting/Help";
 import Settings from "./components/setting/Settings";
 import Location from "./components/Location";
@@ -48,10 +45,7 @@ function App() {
         <Route path="/" element={<Home/>} />       
         <Route path="/map" element={<Map/>}/>
         <Route path="/assistance" element={<Assistance/>}/>
-        <Route path="/about" element={<About/>}/>
-        <Route path="/termsofuse" element={<Termsofuse/>}/>
-        <Route path="/privacy" element={<Privacy/>}/>
-        <Route path="/cookie" element={<Cookiepolicy/>}/>
+
         <Route path="/help" element={<Help/>}/>
         <Route path="/settings" element={<Settings/>}/>
         <Route path="/login" element={<Login />}/>

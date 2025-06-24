@@ -10,7 +10,12 @@ const translations = {
     disableRouting: "Disable Routing",
     clearRoute: "Clear Route",
     searchPlaceholder: "Search building...",
-    filterFaculty: "Filter by Faculty"
+    filterFaculty: "Filter by Faculty",
+    lang: "Choose language",
+    building: "building",
+    name: "name",
+    faculty: "faculty"
+
   },
   fr: {
     title: "Carte du Campus de l'UDS",
@@ -22,7 +27,11 @@ const translations = {
     disableRouting: "Désactiver le routage",
     clearRoute: "Effacer l'itinéraire",
     searchPlaceholder: "Rechercher un bâtiment...",
-    filterFaculty: "Filtrer par faculté"
+    filterFaculty: "Filtrer par faculté",
+    lang: "choisir le langage",
+    building: "batiment",
+    name: "nom",
+    faculty: "faculte"
   }
 };
 

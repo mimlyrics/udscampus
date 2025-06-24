@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import { useLoginMutation } from "../slices/auth/usersApiSlice";
 import { setCredentials } from "../slices/auth/authSlice";
 import { FaRegEyeSlash, FaRegEye, FaX, FaUser } from "react-icons/fa6";
-import { useMimlyrics } from "./context/AppProvider";
+import { useCampus } from "./context/AppProvider";
 import axios from "./api/axios";
 import CLIENT_URL from "./routes/clientRoutes";
 const Login = () => {
@@ -19,7 +19,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {isActiveModalNavbar, setIsActiveModalNavbar} = useMimlyrics();
+  const {isActiveModalNavbar, setIsActiveModalNavbar} = useCampus();
   //console.log("ISL: ", isActiveModalNavbar);
   const [login, {isLoading} ] = useLoginMutation();
   const {token} = useSelector((state) => state.auth);

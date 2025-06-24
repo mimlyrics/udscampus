@@ -6,7 +6,7 @@ import { useLogoutMutation } from "../slices/auth/usersApiSlice";
 import { logout } from "../slices/auth/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../../public/images/uds_logo.png";
-
+import UserLocationMap from "./UserLocationMap";
 const Navbar = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -17,6 +17,9 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   let user = userInfo?.user;
+
+  const userLocation = localStorage.getItem("userLocation");
+  console.log(userLocation);
 
   // Handle scroll effect
   useEffect(() => {
@@ -61,6 +64,7 @@ const Navbar = () => {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
+      {userLocation && <UserLocationMap/>}
       {/* Main Navbar */}
       <nav
         id="header"
@@ -74,7 +78,7 @@ const Navbar = () => {
             className="w-12 h-12 mr-3 cursor-pointer bg-white bg-opacity-20 rounded-lg"
             onClick={() => navigate("/")}
           />
-          <span className="text-xl font-bold font-sans">UDS Campus</span>
+          <span className="text-xl font-bold text-indigo-800 font-sans">UDS Campus</span>
         </div>
 
         {/* Desktop Navigation */}

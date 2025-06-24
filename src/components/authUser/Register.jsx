@@ -8,7 +8,7 @@ import { useRegisterMutation, useGetEmailCodeMutation, useVerifyEmailCodeMutatio
 import { FaRegEyeSlash, FaRegEye, FaCheck, FaCircle, FaSquare, FaX, FaInfo, FaExclamation } from "react-icons/fa6";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
-import { useMimlyrics } from "../context/AppProvider";
+import { useCampus} from "../context/AppProvider";
 import Cookiepolicy from "../policy/Cookiepolicy";
 import Privacy from "../policy/Privacy";
 import Termsofuse from "../policy/Termsofuse";
@@ -53,7 +53,7 @@ const Register = () => {
   const [passwordFocus, setPasswordFocus] = useState("");
   const errRef = useRef();
 
-  const {isActiveModalNavbar, setIsActiveModalNavbar} = useMimlyrics();
+  const {isActiveModalNavbar, setIsActiveModalNavbar} = useCampus();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

@@ -1,75 +1,37 @@
-import {useState, useContext, createContext} from "react";
-const MimlyricsContext = createContext();
-export function useMimlyrics () {
-    return useContext(MimlyricsContext);
+import {useState, useContext, createContext, useEffect} from "react";
+const CampusContext = createContext();
+export function useCampus () {
+    return useContext(CampusContext);
 }
+
+import translations from "../constants/translations";
+
 const AppProvider = ({children}) => {
   const [language, setLanguage] = useState("");
   const [isActiveModalNavbar, setIsActiveModalNavbar] = useState(false);
   const [isActivePage, setIsActivePage] = useState(false);
+  const [lang, setLang] = useState("fr");
+  const t = translations[lang]
+
+  useEffect(() => {
+    console.log('changed');
+  }, [lang]);
+
   const value = {
     language: language,
     isActiveModalNavbar: isActiveModalNavbar,
     setIsActiveModalNavbar: setIsActiveModalNavbar,
     isActivePage: setIsActivePage,
+    lang: lang,
+    setLang: setLang,
+    t: t
   }
 
   return (
-    <MimlyricsContext.Provider value={value}>
+    <CampusContext.Provider value={value}>
       {children}
-    </MimlyricsContext.Provider>
+    </CampusContext.Provider>
   )
 }
 
 export default AppProvider
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*import axios from "axios";
-import {useState, useContext , createContext, useEffect} from "react";
-const mimlyricsContext = createContext();
-const BASE_URL = "http://localhost:5000/api/v1"
-export function useMimlyrics() {
-  return useContext(mimlyricsContext);
-}
-
-const AppProvider = ({children}) => {
-  const [opacity, setOpacity] = useState("");
-  const [room, setRoom] = useState("");
-  const [rooms, setRooms] = useState([]);
-
-  useEffect(() => {
-    const getRooms = async () => {
-      const res = await axios.get(`${BASE_URL}/room`, {headers: {withCredentials: true}});
-      setRooms(res.data.rooms);
-    }
-    getRooms()
-  }, []);
-
-  const value = {
-    opacity: opacity,
-    setOpacity: setOpacity,
-    rooms: rooms,
-    setRooms: setRooms,
-  }
-
-  return (
-    <mimlyricsContext.Provider value={value}>
-        {children}      
-    </mimlyricsContext.Provider>
-  )
-}
-
-export default AppProvider*/
