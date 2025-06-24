@@ -86,9 +86,12 @@ const Map = () => {
   console.log(t);
 
   console.log(translations);
-  const userLocation = JSON.parse(localStorage.getItem("userLocation"));
-  const {lat, lng} = userLocation;
-  console.log(userLocation, lat, lng);
+const storedLocation = localStorage.getItem("userLocation");
+const userLocation = storedLocation ? JSON.parse(storedLocation) : null;
+
+const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
+console.log(userLocation, lat, lng);
+
 
   const [errRoutingMessage, setErrRoutingMessage] = useState(false);
   
