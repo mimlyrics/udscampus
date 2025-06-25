@@ -1,11 +1,11 @@
 
 
-const BASE_URL =  'https://campusuds-api.onrender.com';
-const SU = 'https://campusuds-api.onrender.com/api/v1';
+//const BASE_URL =  'https://campusuds-api.onrender.com';
+//const SU = 'https://campusuds-api.onrender.com/api/v1';
 
 
-//const BASE_URL = "http://localhost:5000";
-//const SU = "http://localhost:5000/api/v1";
+const BASE_URL = "http://localhost:5000";
+const SU = "http://localhost:5000/api/v1";
 
 const SERVER_URL = {
     REGISTER_URL: `${SU}/register`,

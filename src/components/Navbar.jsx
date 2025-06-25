@@ -7,6 +7,7 @@ import { logout } from "../slices/auth/authSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../../public/images/uds_logo.png";
 import UserLocationMap from "./UserLocationMap";
+import { useCampus } from "./context/AppProvider";
 const Navbar = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -17,6 +18,17 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   let user = userInfo?.user;
+
+const { lang, setLang, t } = useCampus();
+
+const languages = [
+  { code: "fr", labelKey: "lang_fr" },
+  { code: "en", labelKey: "lang_en" },
+  { code: "es", labelKey: "lang_es" },
+  { code: "ar", labelKey: "lang_ar" },
+  { code: "de", labelKey: "lang_de" },
+  { code: "pt", labelKey: "lang_pt" },
+];
 
   const userLocation = localStorage.getItem("userLocation");
   console.log(userLocation);
@@ -169,6 +181,17 @@ const Navbar = () => {
           {showMobileMenu ? <FaTimes /> : <FaAlignJustify />}
         </button>
       </nav>
+<select
+  value={lang}
+  onChange={(e) => setLang(e.target.value)}
+  className="bg-white text-blue-900 font-semibold rounded-lg px-3 py-1 text-sm shadow-md hover:bg-gray-100 transition"
+>
+  {languages.map((l) => (
+    <option key={l.code} value={l.code}>
+      {t[l.labelKey] || l.code}
+    </option>
+  ))}
+</select>
 
       {/* Mobile Menu */}
       <AnimatePresence>

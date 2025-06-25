@@ -8,7 +8,7 @@ import { useLogoutMutation } from "../slices/auth/usersApiSlice";
 import mapImg from "../assets/map.png";
 import analyticsImg from "../assets/purchase.png";
 import cocoaBackground from "../../public/images/Campus A/PXL_20250302_060107348.jpg";
-
+import { useCampus } from "./context/AppProvider";
 const Home = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userCode, setUserCode] = useState(null);
@@ -19,6 +19,8 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [logOutApiCall, { isLoading }] = useLogoutMutation();
+
+  const {t} = useCampus();
 
   useEffect(() => {
     const userStorage = JSON.parse(localStorage.getItem("userInfo"));
@@ -69,7 +71,7 @@ const Home = () => {
                 className="block hover:text-blue-200 transition-colors p-2 rounded-lg hover:bg-blue-700"
                 onClick={() => setSidebarOpen(false)}
               >
-                🌍 Carte interactive
+                🌍 {t.interactiveCart}
               </Link>
               <button 
                 className="block hover:text-blue-200 transition-colors p-2 rounded-lg hover:bg-blue-700 w-full text-left"
@@ -134,8 +136,7 @@ const Home = () => {
               Bienvenue sur <span className="text-blue-700">UDS Campus</span>
             </motion.h2>
             <p className="text-lg md:text-xl leading-relaxed text-gray-700 max-w-3xl mx-auto">
-              Notre plateforme offre des outils complets pour suivre la production de cacao de la ferme au marché.
-              Surveillez vos parcelles, analysez la productivité et assurez des pratiques durables.
+              {t.heroSectionParagraph}
             </p>
           </section>
 
@@ -153,17 +154,16 @@ const Home = () => {
                 </div>
                 <div className="text-center md:text-left">
                   <h3 className="text-2xl md:text-3xl font-bold mb-3 text-blue-900 font-['Poppins']">
-                    Carte interactive
+                   {t.mapCardTitle}
                   </h3>
                   <p className="text-gray-600 mb-6 text-lg">
-                    Visualisez toutes vos parcelles de cacao avec des limites détaillées, des données de productivité,
-                    et des mises à jour en temps réel. Notre interface cartographique offre des contrôles intuitifs.
+                    {t.mapCardDescription}
                   </p>
                   <Link
                     to="/map"
                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors shadow-md"
                   >
-                    Ouvrir la carte
+                   {t.mapCardButton}
                   </Link>
                 </div>
               </div>
@@ -181,20 +181,20 @@ const Home = () => {
                 </div>
                 <div className="text-center md:text-left">
                   <h3 className="text-2xl md:text-3xl font-bold mb-3 text-blue-900 font-['Poppins']">
-                    Statistiques
+                   {t.analyticsCardTitle}
                   </h3>
                   <div className="mb-4">
                     <p className="text-4xl font-bold text-blue-600">{connectedUsers}</p>
-                    <p className="text-gray-500">Utilisateurs connectés</p>
+                    <p className="text-gray-500">{t.analyticsConnectedUsersLabel}</p>
                   </div>
                   <p className="text-gray-600 mb-6 text-lg">
-                    Consultez les données clés de votre réseau de production et les tendances d'utilisation.
+                    {t.analyticsDescription}
                   </p>
                   <Link
                     className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors shadow-md"
                     to={`/admin/dashboard`}
                   >
-                    Voir les statistiques
+                    {t.analyticsButton}
                   </Link>
                 </div>
               </div>
@@ -205,25 +205,25 @@ const Home = () => {
           <section className="max-w-4xl mx-auto mb-16">
             <div className="bg-blue-50 rounded-2xl p-8 md:p-10 border border-blue-200">
               <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center text-blue-900 font-['Poppins']">
-                Fonctionnalités clés
+                {t.featureSectionTitle}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
-                  <h4 className="font-bold text-lg mb-2 text-blue-800">Suivi des parcelles</h4>
+                  <h4 className="font-bold text-lg mb-2 text-blue-800">{t.featureParcelTracking}</h4>
                   <p className="text-gray-600">
-                    Surveillez chaque parcelle avec historique détaillé et indicateurs de productivité.
+                    {t.featureParcelTrackingDesc}
                   </p>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
-                  <h4 className="font-bold text-lg mb-2 text-blue-800">Durabilité</h4>
+                  <h4 className="font-bold text-lg mb-2 text-blue-800">{t.featureSustainabilityTitle}</h4>
                   <p className="text-gray-600">
-                    Suivez l'impact environnemental et assurez des pratiques agricoles durables.
+                    {t.featureSustainabilityDesc}
                   </p>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-blue-100">
-                  <h4 className="font-bold text-lg mb-2 text-blue-800">Analyse des données</h4>
+                  <h4 className="font-bold text-lg mb-2 text-blue-800">{t.featureDataAnalysisTitle}</h4>
                   <p className="text-gray-600">
-                    Outils avancés pour prévoir les rendements et analyser la qualité.
+                    {t.featureDataAnalysisDesc}
                   </p>
                 </div>
               </div>

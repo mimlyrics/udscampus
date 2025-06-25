@@ -98,7 +98,7 @@ const Login = () => {
             autoComplete="off"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className=" p-2 pl-8 border rounded w-full text-amber-600 border-black"
+            className=" p-2 pl-8 border rounded w-full text-indigo-600 border-black"
           />
         </div>
       </div>
@@ -113,7 +113,7 @@ const Login = () => {
                 autoComplete="off"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className=" p-2 border rounded w-full text-amber-600 border-black"
+                className=" p-2 border rounded w-full text-indigo-600 border-black"
                 placeholder="Password"
               />
 
@@ -133,7 +133,7 @@ const Login = () => {
                 autoComplete="off"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className=" p-2 pl-8 border rounded w-full text-amber-600 border-black"
+                className=" p-2 pl-8 border rounded w-full text-indigo-600 border-black"
               />
               <div className="absolute top-2 ml-[93%] md:ml-[93%]">
                 <button type="button" onClick={handleShowPassword}>
@@ -147,7 +147,7 @@ const Login = () => {
 
         <button
           type="submit"
-          className="ml-3 p-2 mt-3 transition ease-in-out delay-150 duration-300 w-48 shadow-lg bg-amber-300  rounded hover:scale-103 hover:translate-y-1 hover:bg-amber-500"
+          className="ml-3 p-2 mt-3 transition ease-in-out delay-150 duration-300 w-48 shadow-lg bg-indigo-500 text-white  rounded hover:scale-103 hover:translate-y-1 hover:bg-amber-500"
         >
           Se connecter
         </button>

@@ -163,6 +163,15 @@ console.log(userLocation, lat, lng);
 
   const theme = themes[currentTheme];
 
+  const handleTheme = (key) => {
+
+    setCurrentTheme(key);
+    if (key === "nature") setCurrentFont("comic");
+    else if (key === "classic") setCurrentFont("serif");
+    else setCurrentFont("sans");
+    
+  }
+
   return (
     <div>
 
@@ -194,7 +203,7 @@ console.log(userLocation, lat, lng);
         theme={theme}
       />
 
-      {/* === Map Wrapper === */}
+      {/* === Map Wrapper  THEME === */}
       {/* 
         • On mobile: we give this a fixed 90vh height so that, even if the sidebar pushes content, 
           the map area does not shrink too much.
@@ -202,17 +211,12 @@ console.log(userLocation, lat, lng);
       */}
       <div className="relative h-[200vh] md:flex-1 md:h-auto">
         {/* Theme & Font Buttons (unchanged) */}
-        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+        <div className="absolute top-4 left-4 z-50 flex flex-col gap-2">
           <div className="flex gap-2 flex-wrap">
             {Object.entries(themes).map(([key, themeObj]) => (
               <button
                 key={key}
-                onClick={() => {
-                  setCurrentTheme(key);
-                  if (key === "nature") setCurrentFont("comic");
-                  else if (key === "classic") setCurrentFont("serif");
-                  else setCurrentFont("sans");
-                }}
+                onClick={() => handleTheme(key)}
                 className={`
                   px-4 py-2 rounded-lg text-sm font-bold shadow-md transition-all 
                   ${
@@ -252,7 +256,7 @@ console.log(userLocation, lat, lng);
           zoom={16}
           scrollWheelZoom
           ref={mapRef}
-          className={`h-full w-full absolute inset-0 ${theme.mapBorder} shadow-xl`}
+          className={`h-full w-full absolute z-10 inset-0 ${theme.mapBorder} shadow-xl`}
         >
           <TileLayer
             url={theme.tileLayer}
@@ -321,10 +325,10 @@ console.log(userLocation, lat, lng);
         {/* === Desktop Legend (hidden on mobile) === */}
         <motion.div
           className={`
-            absolute z-50 top-20 right-4 
+            absolute z-30 top-2 right-2
             hidden md:block 
             ${theme.legendBg} ${theme.legendText} 
-            p-4 rounded-lg border-l-4 border-purple-500 
+            p-2 rounded-lg border-l-4 border-purple-500 
             max-w-xs shadow-xl 
             ${fontStyles[currentFont]}
           `}
@@ -341,7 +345,7 @@ console.log(userLocation, lat, lng);
                   style={{ background: color }}
                   className="w-6 h-6 rounded-full border border-white"
                 ></div>
-                <span className="text-md font-medium">{key}</span>
+                <span className="text-sm font-medium">{key}</span>
               </div>
             ))}
         </motion.div>
@@ -373,8 +377,8 @@ console.log(userLocation, lat, lng);
 
 
     </motion.div>
-        {/* === Desktop Legend (hidden on mobile) === */}
-        <motion.div
+        
+      {/* <motion.div
           className={`
             md:hidden 
             ${theme.legendBg} ${theme.legendText} 
@@ -399,6 +403,7 @@ console.log(userLocation, lat, lng);
               </div>
             ))}
         </motion.div>
+      */}
 
     </div>
   );

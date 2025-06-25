@@ -8,12 +8,14 @@ import {
 import { LuRoute, LuRuler } from 'react-icons/lu';
 import { FaPencil } from 'react-icons/fa6';
 import { FaMouse } from 'react-icons/fa';
-
+import { useCampus } from '../context/AppProvider';
 const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage }) => {
   const map = useMap();
   const routingControlRef = useRef(null);
   const markerRef = useRef(null);
   const intervalRef = useRef(null);
+
+  const {t,lang} = useCampus();
 
   const [mode, setMode] = useState('current'); // current | manual | click
   const [start, setStart] = useState('');
@@ -148,13 +150,13 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
   };
 
   return (
-    <div className="absolute mt-40 top-4 left-4 z-[1000] w-[90%] max-w-xs md:max-w-sm bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-xl space-y-3 border border-gray-300">
-      <h3 className="text-lg font-bold text-blue-800 flex items-center gap-2">
-        <LuRoute /> Route Planner
+    <div className="absolute mt-40 top-1 left-1 z-[1000] w-[50%] md:w-[90%] max-w-xs md:max-w-sm bg-gradient-to-r from-[rgba(100,50,240,0.4)] to-[rgba(100,0,240,0.9)] backdrop-blur-md p-4 rounded-xl shadow-xl space-y-3 border border-gray-300">
+      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+        <LuRoute /> {t.routePlanner}
       </h3>
 
       <div>
-        <label className="text-sm font-semibold">Select Mode</label>
+        <label className="text-sm font-semibold">{t.selectMode}</label>
         <select
           value={mode}
           onChange={(e) => {
@@ -163,9 +165,9 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
           }}
           className="w-full mt-1 p-2 border border-gray-300 rounded text-sm"
         >
-          <option value="current">🧍 Current ➝ Destination</option>
-          <option value="manual"> <FaPencil className='text-slate-900 text-xl'/> Start ➝ Destination (manual)</option>
-          <option value="click"> <FaMouse className='text-slate-900 text-xl'/> Click 2 Points on Map</option>
+          <option value="current">{t.currentToDestination}</option>
+          <option value="manual"> <FaPencil className='text-slate-900 text-xl'/> {t.startToDestination}</option>
+          <option value="click"> <FaMouse className='text-slate-900 text-xl'/> {t.clickPointsOnTheMap}</option>
         </select>
       </div>
 
@@ -202,14 +204,14 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
           disabled={mode === 'click'}
           className={`w-full flex items-center justify-center gap-2 ${mode === 'click' ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white py-2 rounded transition font-semibold`}
         >
-          <FiNavigation /> Calculate Route
+          <FiNavigation /> {t.calculateRoute}
         </button>
 
         <button
           onClick={handleClear}
           className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300 transition font-semibold"
         >
-          <FiX /> Clear
+          <FiX /> Effacer
         </button>
       </div>
 
@@ -219,10 +221,10 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
             <LuRuler /> Distance: <strong>{routeInfo.distance} km</strong>
           </p>
           <p className="flex items-center gap-1">
-            <FiClock /> Duration: <strong>{routeInfo.duration} min</strong>
+            <FiClock />{t.duration}: <strong>{routeInfo.duration} min</strong>
           </p>
           <p className="flex items-center gap-1">
-            <FiMapPin /> Steps: <strong>{routeInfo.steps}</strong>
+            <FiMapPin /> {t.steps}: <strong>{routeInfo.steps}</strong>
           </p>
         </div>
       )}
