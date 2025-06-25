@@ -181,6 +181,8 @@ const languages = [
           {showMobileMenu ? <FaTimes /> : <FaAlignJustify />}
         </button>
       </nav>
+
+<div className="absolute z-50 top-16 left-2 mb-8">
 <select
   value={lang}
   onChange={(e) => setLang(e.target.value)}
@@ -192,7 +194,7 @@ const languages = [
     </option>
   ))}
 </select>
-
+</div>
       {/* Mobile Menu */}
       <AnimatePresence>
         {showMobileMenu && (

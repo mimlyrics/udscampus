@@ -158,7 +158,9 @@ const translations = {
     footerLinkLogout: "Déconnexion",
 
     copyright:
-      "© 2025 UDS CAMPUS Cameroun. Tous droits réservés."
+      "© 2025 UDS CAMPUS Cameroun. Tous droits réservés.",
+  hideRouting: "Hide route planner",
+  showRouting: "Show route planner"
   },
 
   es: {
@@ -239,7 +241,9 @@ const translations = {
     footerLinkLogout: "Cerrar sesión",
 
     copyright:
-      "© 2025 CAMPUS UDS Camerún. Todos los derechos reservados."
+      "© 2025 CAMPUS UDS Camerún. Todos los derechos reservados.",
+  hideRouting: "Masquer le planificateur",
+  showRouting: "Afficher le planificateur"
   },
 
   pt: {
@@ -320,7 +324,9 @@ const translations = {
     footerLinkLogout: "Sair",
 
     copyright:
-      "© 2025 CAMPUS UDS Camarões. Todos os direitos reservados."
+      "© 2025 CAMPUS UDS Camarões. Todos os direitos reservados.",
+  hideRouting: "Masquer le planificateur",
+  showRouting: "Afficher le planificateur"
   },
 
   ar: {
@@ -401,7 +407,9 @@ const translations = {
     footerLinkLogout: "تسجيل الخروج",
 
     copyright:
-      "© 2025 حرم UDS الكاميرون. جميع الحقوق محفوظة."
+      "© 2025 حرم UDS الكاميرون. جميع الحقوق محفوظة.",
+  hideRouting: "Masquer le planificateur",
+  showRouting: "Afficher le planificateur"
   },
 
   de: {
@@ -482,7 +490,9 @@ const translations = {
     footerLinkLogout: "Abmelden",
 
     copyright:
-      "© 2025 UDS CAMPUS Kamerun. Alle Rechte vorbehalten."
+      "© 2025 UDS CAMPUS Kamerun. Alle Rechte vorbehalten.",
+        hideRouting: "Masquer le planificateur",
+  showRouting: "Afficher le planificateur"
   }
 };
 

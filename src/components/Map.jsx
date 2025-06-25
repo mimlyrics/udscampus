@@ -83,14 +83,14 @@ const Map = () => {
   const [currentFont, setCurrentFont] = useState('sans');
   const mapRef = useRef();
   const t = translations[lang];
-  console.log(t);
+  //console.log(t);
 
-  console.log(translations);
+  //console.log(translations);
 const storedLocation = localStorage.getItem("userLocation");
 const userLocation = storedLocation ? JSON.parse(storedLocation) : null;
 
 const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
-console.log(userLocation, lat, lng);
+//console.log(userLocation, lat, lng);
 
 
   const [errRoutingMessage, setErrRoutingMessage] = useState(false);
@@ -120,46 +120,53 @@ console.log(userLocation, lat, lng);
       .catch((err) => console.error("Error loading Routes.geojson:", err));
   }, []);
 
-  const onEachFeature = (feature, layer) => {
-    const { name, Faculty, A_propos, IMAGE } = feature.properties;
-    const coords = layer.getBounds().getCenter();
-    const popupContent = `
-      <div class="${fontStyles[currentFont]}">
-        <strong class="text-lg">${t.faculty}: ${Faculty}</strong><br/>
-        <span class="font-bold">${t.building}:</span> ${name}<br/>
-        <img src="${IMAGE}" class="w-full h-24 object-cover rounded-lg mt-2" />
-      </div>
-    `;
+ const onEachFeature = (feature, layer) => {
+  const { name, Faculty, A_propos, IMAGE } = feature.properties;
+  const coords = layer.getBounds().getCenter();
+
+  // Always bind popup, but show only when routing is disabled
+  const popupContent = `
+    <div class="${fontStyles[currentFont]}">
+      <strong class="text-lg">${t.faculty}: ${Faculty}</strong><br/>
+      <span class="font-bold">${t.building}:</span> ${name}<br/>
+      <img src="${IMAGE}" class="w-full h-24 object-cover rounded-lg mt-2" />
+    </div>
+  `;
+
+  if (!routingEnabled) {
     layer.bindPopup(popupContent);
+  }
 
-    layer.on("click", () => {
-      if (routingEnabled) {
-        if (!startPoint) {
-          setStartPoint(coords);
-          alert(t.setStartPoint);
-        } else {
-          if (routeControl) {
-            mapRef.current.removeControl(routeControl);
-          }
-          const control = L.Routing.control({
-            waypoints: [
-              L.latLng(startPoint.lat, startPoint.lng),
-              L.latLng(coords.lat, coords.lng)
-            ]
-          }).addTo(mapRef.current);
-          setRouteControl(control);
-          setStartPoint(null);
+  layer.on("click", () => {
+    if (routingEnabled) {
+      if (!startPoint) {
+        setStartPoint(coords);
+        alert(t.setStartPoint);
+      } else {
+        if (routeControl) {
+          mapRef.current.removeControl(routeControl);
         }
+        const control = L.Routing.control({
+          waypoints: [
+            L.latLng(startPoint.lat, startPoint.lng),
+            L.latLng(coords.lat, coords.lng),
+          ],
+        }).addTo(mapRef.current);
+        setRouteControl(control);
+        setStartPoint(null);
       }
-
+    } else {
       setSelectedBuilding({
         name,
         faculty: Faculty,
         description: A_propos,
-        image: IMAGE
+        image: IMAGE,
       });
-    });
-  };
+      layer.openPopup(); // Open popup only if routing is disabled
+    }
+  });
+};
+
 
   const theme = themes[currentTheme];
 

@@ -5,15 +5,21 @@ import { useMap } from 'react-leaflet';
 import {
   FiMapPin, FiNavigation, FiMousePointer, FiX, FiClock,
 } from 'react-icons/fi';
-import { LuRoute, LuRuler } from 'react-icons/lu';
-import { FaPencil } from 'react-icons/fa6';
-import { FaMouse } from 'react-icons/fa';
+
 import { useCampus } from '../context/AppProvider';
+import {
+  LuRouter,
+  LuRuler} from 'react-icons/lu';
+
+import { FaPencil, FaComputerMouse } from 'react-icons/fa6';
+
 const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage }) => {
   const map = useMap();
   const routingControlRef = useRef(null);
   const markerRef = useRef(null);
   const intervalRef = useRef(null);
+  const [showRouteModal, setShowRouteModal] = useState(true);
+
 
   const {t,lang} = useCampus();
 
@@ -150,9 +156,25 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
   };
 
   return (
-    <div className="absolute mt-40 top-1 left-1 z-[1000] w-[50%] md:w-[90%] max-w-xs md:max-w-sm bg-gradient-to-r from-[rgba(100,50,240,0.4)] to-[rgba(100,0,240,0.9)] backdrop-blur-md p-4 rounded-xl shadow-xl space-y-3 border border-gray-300">
+<>
+  {/* Toggle Button */}
+  <button
+    onClick={() => setShowRouteModal(!showRouteModal)}
+    className="absolute mt-36 left-1 z-[1001] bg-white rounded-full p-2 shadow-md hover:scale-105 transition"
+    title={showRouteModal ? t.hideRouting : t.showRouting}
+  >
+    {showRouteModal ? (
+      <FiX className="text-red-600" size={20} />
+    ) : (
+      <LuRouter className="text-blue-700" size={20} />
+    )}
+  </button>
+
+  {/* Modal */}
+  {showRouteModal && (
+    <div className="absolute mt-40 top-1 left-1 z-[1000] w-[50%] md:w-[90%] max-w-xs md:max-w-sm bg-gradient-to-r from-[rgba(34,34,56,0.4)] to-[rgba(9,9,49,0.9)] backdrop-blur-md p-4 rounded-xl shadow-xl space-y-3 border border-gray-300">
       <h3 className="text-lg font-bold text-white flex items-center gap-2">
-        <LuRoute /> {t.routePlanner}
+        <LuRouter /> {t.routePlanner}
       </h3>
 
       <div>
@@ -166,8 +188,14 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
           className="w-full mt-1 p-2 border border-gray-300 rounded text-sm"
         >
           <option value="current">{t.currentToDestination}</option>
-          <option value="manual"> <FaPencil className='text-slate-900 text-xl'/> {t.startToDestination}</option>
-          <option value="click"> <FaMouse className='text-slate-900 text-xl'/> {t.clickPointsOnTheMap}</option>
+          <option value="manual">
+            <FaPencil className="text-slate-900 text-xl inline mr-1" />
+            {t.startToDestination}
+          </option>
+          <option value="click">
+            <FaComputerMouse className="text-slate-900 text-xl inline mr-1" />
+            {t.clickPointsOnTheMap}
+          </option>
         </select>
       </div>
 
@@ -202,26 +230,31 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
         <button
           onClick={() => handleRoute()}
           disabled={mode === 'click'}
-          className={`w-full flex items-center justify-center gap-2 ${mode === 'click' ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'} text-white py-2 rounded transition font-semibold`}
+          className={`w-full flex items-center justify-center gap-2 ${
+            mode === 'click'
+              ? 'bg-gray-300 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'
+          } text-white py-2 rounded transition font-semibold`}
         >
           <FiNavigation /> {t.calculateRoute}
         </button>
 
         <button
           onClick={handleClear}
-          className="w-full flex items-center justify-center gap-2 bg-gray-200 text-gray-800 py-2 rounded hover:bg-gray-300 transition font-semibold"
+          className="w-full flex items-center justify-center gap-2 text-white py-2 rounded hover:bg-gray-300 transition font-semibold"
         >
           <FiX /> Effacer
         </button>
       </div>
 
       {routeInfo && (
-        <div className="text-sm text-gray-700 bg-gray-100 p-2 rounded shadow-inner space-y-1">
+        <div className="text-sm text-white p-2 rounded shadow-inner space-y-1">
           <p className="flex items-center gap-1">
             <LuRuler /> Distance: <strong>{routeInfo.distance} km</strong>
           </p>
           <p className="flex items-center gap-1">
-            <FiClock />{t.duration}: <strong>{routeInfo.duration} min</strong>
+            <FiClock /> {t.duration}:{' '}
+            <strong>{routeInfo.duration} min</strong>
           </p>
           <p className="flex items-center gap-1">
             <FiMapPin /> {t.steps}: <strong>{routeInfo.steps}</strong>
@@ -229,6 +262,8 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
         </div>
       )}
     </div>
+  )}
+</>
   );
 };
 
