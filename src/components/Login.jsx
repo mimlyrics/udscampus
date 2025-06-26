@@ -19,7 +19,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {isActiveModalNavbar, setIsActiveModalNavbar} = useCampus();
+  const {isActiveModalNavbar, setIsActiveModalNavbar,t} = useCampus();
   //console.log("ISL: ", isActiveModalNavbar);
   const [login, {isLoading} ] = useLoginMutation();
   const {token} = useSelector((state) => state.auth);
@@ -76,21 +76,21 @@ const Login = () => {
         onSubmit={handleSubmit}
       >
           <h2 className="text-center italic text-2xl">
-            Connexion
+          {t.login}
           </h2>
           {/* <FaX onClick={() => CloseLogin()} className=" cursor-pointer w-6 h-6 text-cyan-500 hover:text-cyan-900 "/>   */}
       {errMessage ? <h1 className="font-medium text-center my-3 text-xl text-red-400 md:text-lg ">{errMessage}</h1> : null}
       {success ? <h1 className="font-medium text-center my-3 text-xl text-blue-800 md:text-lg ">{success}</h1> : null}
       {hi ? null : null}
         <p className="mb-3 mt-2 text-center">
-          Vous n'avez pas de compte ?{" "}
+          {t.noAccount} ?{" "}
           <Link to="/register" className="bg-amber-200 rounded">
             Créer un compte
           </Link>
         </p>
 
       <div className="form-group p-2">
-        <label htmlFor="email">Nom d'utilisateur</label>
+        <label htmlFor="email">{t.username}</label>
         <div className="relative">
           <FaUser className="absolute text-black top-1/2 left-2 -translate-y-1/2"/>
           <input
@@ -106,7 +106,7 @@ const Login = () => {
       <div className="form-group p-2">
         {showPassword ? (
           <div className="">
-            <label htmlFor="password">Mot de passe</label>
+            <label htmlFor="password">{t.password}</label>
             <div className="relative">
               <input
                 type="text"
@@ -126,7 +126,7 @@ const Login = () => {
           </div>
           ) : (
           <div className="">
-            <label htmlFor="password">Mot de passe</label>
+            <label htmlFor="password">{t.password}</label>
               <div className="relative">
               <input
                 type="password"
@@ -149,7 +149,7 @@ const Login = () => {
           type="submit"
           className="ml-3 p-2 mt-3 transition ease-in-out delay-150 duration-300 w-48 shadow-lg bg-indigo-500 text-white  rounded hover:scale-103 hover:translate-y-1 hover:bg-amber-500"
         >
-          Se connecter
+         {t.login}
         </button>
       </form>
     </section>

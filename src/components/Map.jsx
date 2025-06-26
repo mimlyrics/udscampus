@@ -93,6 +93,10 @@ const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
 //console.log(userLocation, lat, lng);
 
 
+  useEffect(() => {
+    setRoutingEnabled(routingEnabled);
+  }, [routingEnabled])
+
   const [errRoutingMessage, setErrRoutingMessage] = useState(false);
   
   useEffect(() => {
@@ -120,28 +124,16 @@ const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
       .catch((err) => console.error("Error loading Routes.geojson:", err));
   }, []);
 
- const onEachFeature = (feature, layer) => {
+const onEachFeature = (feature, layer) => {
   const { name, Faculty, A_propos, IMAGE } = feature.properties;
   const coords = layer.getBounds().getCenter();
 
-  // Always bind popup, but show only when routing is disabled
-  const popupContent = `
-    <div class="${fontStyles[currentFont]}">
-      <strong class="text-lg">${t.faculty}: ${Faculty}</strong><br/>
-      <span class="font-bold">${t.building}:</span> ${name}<br/>
-      <img src="${IMAGE}" class="w-full h-24 object-cover rounded-lg mt-2" />
-    </div>
-  `;
-
-  if (!routingEnabled) {
-    layer.bindPopup(popupContent);
-  }
-
   layer.on("click", () => {
     if (routingEnabled) {
+      // Routing
       if (!startPoint) {
         setStartPoint(coords);
-        alert(t.setStartPoint);
+        alert(t.setStartPoint || "Start point set");
       } else {
         if (routeControl) {
           mapRef.current.removeControl(routeControl);
@@ -156,13 +148,31 @@ const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
         setStartPoint(null);
       }
     } else {
+      // Popup
       setSelectedBuilding({
         name,
         faculty: Faculty,
         description: A_propos,
         image: IMAGE,
       });
-      layer.openPopup(); // Open popup only if routing is disabled
+
+      const fontClass = fontStyles[currentFont] || "font-sans";
+      const labelFaculty = t?.faculty || "Faculty";
+      const labelBuilding = t?.building || "Building";
+      const imageUrl = IMAGE || "https://via.placeholder.com/150";
+
+      const popupContent = `
+        <div class="${fontClass}">
+          <strong class="text-lg">${labelFaculty}: ${Faculty || "N/A"}</strong><br/>
+          <span class="font-bold">${labelBuilding}:</span> ${name || "N/A"}<br/>
+          <img src="${imageUrl}" class="w-full h-24 object-cover rounded-lg mt-2" />
+        </div>
+      `;
+
+      L.popup()
+        .setLatLng(coords)
+        .setContent(popupContent)
+        .openOn(mapRef.current);
     }
   });
 };
@@ -271,9 +281,9 @@ const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
           />
           <ScaleControl position="bottomleft" />
 
-          {buildingGeojson && (
+          {buildingGeojson &&  (
             <GeoJSON
-              key={`${selectedFaculty || "all"}-${lang}`}
+              key={routingEnabled ? "routing" : "popup"}
               data={{
                 ...buildingGeojson,
                 features: buildingGeojson.features.filter((feature) => {
@@ -283,6 +293,7 @@ const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
                   );
                 })
               }}
+
               style={(feature) => {
                 const normalizedFaculty = (
                   feature.properties.Faculty || ""
@@ -296,6 +307,7 @@ const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
                   fillOpacity: 0.85
                 };
               }}
+
               onEachFeature={onEachFeature}
             />
           )}

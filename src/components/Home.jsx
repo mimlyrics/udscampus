@@ -77,7 +77,7 @@ const Home = () => {
                 className="block hover:text-blue-200 transition-colors p-2 rounded-lg hover:bg-blue-700 w-full text-left"
                 onClick={handleLogout}
               >
-                🔒 Déconnexion
+                🔒{t.lougout}
               </button>
             </nav>
 
@@ -119,7 +119,7 @@ const Home = () => {
               UDS Campus
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-2xl">
-              Suivi avancé et gestion pour une production durable de cacao
+              {t.headerSubtitle}
             </p>
           </motion.div>
         </header>
@@ -133,7 +133,7 @@ const Home = () => {
               transition={{ duration: 0.6 }}
               className="text-3xl md:text-5xl font-bold mb-6 font-['Poppins']"
             >
-              Bienvenue sur <span className="text-blue-700">UDS Campus</span>
+              {t.heroSectionTitle}
             </motion.h2>
             <p className="text-lg md:text-xl leading-relaxed text-gray-700 max-w-3xl mx-auto">
               {t.heroSectionParagraph}
@@ -243,33 +243,33 @@ const Home = () => {
         <footer className="bg-blue-900 text-white py-12">
           <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-10">
             <div>
-              <h4 className="font-bold text-lg mb-4 font-['Poppins']">Contactez-nous</h4>
+              <h4 className="font-bold text-lg mb-4 font-['Poppins']">{t.footerContactTile}</h4>
               <p className="mb-2">(+237) 699 450 745</p>
               <p className="mb-2">(+237) 691 143 992</p>
               <p>romarickdeffo@gmail.com</p>
             </div>
 
             <div>
-              <h4 className="font-bold text-lg mb-4 font-['Poppins']">Liens rapides</h4>
+              <h4 className="font-bold text-lg mb-4 font-['Poppins']">{t.footerQuickLinksTitle}</h4>
               <Link to="/map" className="block mb-2 hover:text-blue-200 transition-colors">
-                Carte interactive
+                {t.footerLinkMap}
               </Link>
               <button onClick={handleLogout} className="hover:text-blue-200 transition-colors text-left">
-                Déconnexion
+                {t.footerLinkLogout}
               </button>
             </div>
 
             <div>
-              <h4 className="font-bold text-lg mb-4 font-['Poppins']">À propos</h4>
+              <h4 className="font-bold text-lg mb-4 font-['Poppins']">{t.footerAboutTitle}</h4>
               <p className="text-blue-200">
-                UDS campus fournit des solutions numériques pour une culture durable du cacao au Cameroun.
+                {t.footerAboutDesc}
               </p>
             </div>
           </div>
 
           <div className="max-w-7xl mx-auto px-6 md:px-12 mt-12 pt-6 border-t border-blue-800">
             <p className="text-center text-sm text-blue-300">
-              © 2025 UDS CAMPUS Cameroun. Tous droits réservés.
+              {t.copyright}
             </p>
           </div>
         </footer>

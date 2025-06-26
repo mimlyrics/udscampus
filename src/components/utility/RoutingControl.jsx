@@ -5,12 +5,8 @@ import { useMap } from 'react-leaflet';
 import {
   FiMapPin, FiNavigation, FiMousePointer, FiX, FiClock,
 } from 'react-icons/fi';
-
 import { useCampus } from '../context/AppProvider';
-import {
-  LuRouter,
-  LuRuler} from 'react-icons/lu';
-
+import { LuRouter, LuRuler } from 'react-icons/lu';
 import { FaPencil, FaComputerMouse } from 'react-icons/fa6';
 
 const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage }) => {
@@ -20,10 +16,9 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
   const intervalRef = useRef(null);
   const [showRouteModal, setShowRouteModal] = useState(true);
 
+  const { t, lang } = useCampus();
 
-  const {t,lang} = useCampus();
-
-  const [mode, setMode] = useState('current'); // current | manual | click
+  const [mode, setMode] = useState('click'); // Default mode is now 'click'
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [clickPoints, setClickPoints] = useState([]);
@@ -40,16 +35,13 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
     if (mode === 'click') {
       setClickPoints(prev => {
         const updated = [...prev, e.latlng];
+        if (updated.length === 2) {
+          handleRoute(updated[0], updated[1]);
+        }
         return updated.length > 2 ? [e.latlng] : updated;
       });
     }
   };
-
-  useEffect(() => {
-    if (mode === 'click' && clickPoints.length === 2) {
-      handleRoute(clickPoints[0], clickPoints[1]);
-    }
-  }, [clickPoints]);
 
   useEffect(() => {
     if (mode === 'click') {
@@ -57,8 +49,10 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
     } else {
       map.off('click', handleMapClick);
     }
-    return () => map.off('click', handleMapClick);
-  }, [mode, clickPoints]);
+    return () => {
+      map.off('click', handleMapClick);
+    };
+  }, [mode]);
 
   const handleRoute = (customStart = null, customEnd = null) => {
     if (routingControlRef.current) {
@@ -89,7 +83,7 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
     }
 
     if (!origin || !destination) {
-      setErrRoutingMessage('Cordonee invalid, utiliser le format (lat,lng');
+      setErrRoutingMessage('Coordonnées invalides. Utilisez le format (lat,lng)');
       setTimeout(() => setErrRoutingMessage(false), 3000);
       return;
     }
@@ -156,114 +150,113 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
   };
 
   return (
-<>
-  {/* Toggle Button */}
-  <button
-    onClick={() => setShowRouteModal(!showRouteModal)}
-    className="absolute mt-36 left-1 z-[1001] bg-white rounded-full p-2 shadow-md hover:scale-105 transition"
-    title={showRouteModal ? t.hideRouting : t.showRouting}
-  >
-    {showRouteModal ? (
-      <FiX className="text-red-600" size={20} />
-    ) : (
-      <LuRouter className="text-blue-700" size={20} />
-    )}
-  </button>
+    <>
+      {/* Toggle Button */}
+      <button
+        onClick={() => setShowRouteModal(!showRouteModal)}
+        className="absolute mt-36 left-1 z-[1001] bg-white rounded-full p-2 shadow-md hover:scale-105 transition"
+        title={showRouteModal ? t.hideRouting : t.showRouting}
+      >
+        {showRouteModal ? (
+          <FiX className="text-red-600" size={20} />
+        ) : (
+          <LuRouter className="text-blue-700" size={20} />
+        )}
+      </button>
 
-  {/* Modal */}
-  {showRouteModal && (
-    <div className="absolute mt-40 top-1 left-1 z-[1000] w-[50%] md:w-[90%] max-w-xs md:max-w-sm bg-gradient-to-r from-[rgba(34,34,56,0.4)] to-[rgba(9,9,49,0.9)] backdrop-blur-md p-4 rounded-xl shadow-xl space-y-3 border border-gray-300">
-      <h3 className="text-lg font-bold text-white flex items-center gap-2">
-        <LuRouter /> {t.routePlanner}
-      </h3>
+      {/* Modal */}
+      {showRouteModal && (
+        <div className="absolute mt-40 top-1 left-1 z-[1000] w-[50%] md:w-[90%] max-w-xs md:max-w-sm bg-gradient-to-r from-[rgba(34,34,56,0.4)] to-[rgba(9,9,49,0.9)] backdrop-blur-md p-4 rounded-xl shadow-xl space-y-3 border border-gray-300">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <LuRouter /> {t.routePlanner}
+          </h3>
 
-      <div>
-        <label className="text-sm font-semibold">{t.selectMode}</label>
-        <select
-          value={mode}
-          onChange={(e) => {
-            setMode(e.target.value);
-            setClickPoints([]);
-          }}
-          className="w-full mt-1 p-2 border border-gray-300 rounded text-sm"
-        >
-          <option value="current">{t.currentToDestination}</option>
-          <option value="manual">
-            <FaPencil className="text-slate-900 text-xl inline mr-1" />
-            {t.startToDestination}
-          </option>
-          <option value="click">
-            <FaComputerMouse className="text-slate-900 text-xl inline mr-1" />
-            {t.clickPointsOnTheMap}
-          </option>
-        </select>
-      </div>
+          <div className="text-indigo-700">
+            <label className="text-sm font-semibold">{t.selectMode}</label>
+            <select
+              value={mode}
+              onChange={(e) => {
+                setMode(e.target.value);
+                setClickPoints([]);
+              }}
+              className="w-full mt-1 p-2 border border-gray-100 rounded text-sm"
+            >
+              <option value="current">{t.currentToDestination}</option>
+              <option value="manual">
+                <FaPencil className="text-slate-900 text-xl inline mr-1" />
+                {t.startToDestination}
+              </option>
+              <option value="click">
+                <FaComputerMouse className="text-slate-900 text-xl inline mr-1" />
+                {t.clickPointsOnTheMap}
+              </option>
+            </select>
+          </div>
 
-      {mode === 'manual' && (
-        <input
-          type="text"
-          value={start}
-          onChange={(e) => setStart(e.target.value)}
-          placeholder="Start (lat,lng)"
-          className="w-full border border-gray-300 p-2 rounded text-sm focus:ring-2 focus:ring-blue-500"
-        />
-      )}
+          {mode === 'manual' && (
+            <input
+              type="text"
+              value={start}
+              onChange={(e) => setStart(e.target.value)}
+              placeholder="Start (lat,lng)"
+              className="w-full border border-gray-100 text-indigo-700 p-2 rounded text-sm focus:ring-2 focus:ring-blue-500"
+            />
+          )}
 
-      {mode !== 'click' && (
-        <input
-          type="text"
-          value={end}
-          onChange={(e) => setEnd(e.target.value)}
-          placeholder="End (lat,lng)"
-          className="w-full border border-gray-300 p-2 rounded text-sm focus:ring-2 focus:ring-blue-500"
-        />
-      )}
+          {mode !== 'click' && (
+            <input
+              type="text"
+              value={end}
+              onChange={(e) => setEnd(e.target.value)}
+              placeholder="End (lat,lng)"
+              className="w-full border border-gray-100 text-indigo-700 p-2 rounded text-sm focus:ring-2 focus:ring-blue-500"
+            />
+          )}
 
-      {mode === 'click' && (
-        <p className="text-sm text-gray-600 flex items-center gap-1">
-          <FiMousePointer />
-          Click {2 - clickPoints.length} point(s) on the map
-        </p>
-      )}
+          {mode === 'click' && (
+            <p className="text-sm text-white flex items-center gap-1">
+              <FiMousePointer />
+              Click {2 - clickPoints.length} point(s) on the map
+            </p>
+          )}
 
-      <div className="flex flex-col sm:flex-row gap-2">
-        <button
-          onClick={() => handleRoute()}
-          disabled={mode === 'click'}
-          className={`w-full flex items-center justify-center gap-2 ${
-            mode === 'click'
-              ? 'bg-gray-300 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700'
-          } text-white py-2 rounded transition font-semibold`}
-        >
-          <FiNavigation /> {t.calculateRoute}
-        </button>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <button
+              onClick={() => handleRoute()}
+              disabled={mode === 'click'}
+              className={`w-full flex items-center justify-center gap-2 ${
+                mode === 'click'
+                  ? 'bg-gray-300 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700'
+              } text-white py-2 rounded transition font-semibold`}
+            >
+              <FiNavigation /> {t.calculateRoute}
+            </button>
 
-        <button
-          onClick={handleClear}
-          className="w-full flex items-center justify-center gap-2 text-white py-2 rounded hover:bg-gray-300 transition font-semibold"
-        >
-          <FiX /> Effacer
-        </button>
-      </div>
+            <button
+              onClick={handleClear}
+              className="w-full flex items-center justify-center gap-2 text-white py-2 rounded hover:bg-gray-300 transition font-semibold"
+            >
+              <FiX /> Effacer
+            </button>
+          </div>
 
-      {routeInfo && (
-        <div className="text-sm text-white p-2 rounded shadow-inner space-y-1">
-          <p className="flex items-center gap-1">
-            <LuRuler /> Distance: <strong>{routeInfo.distance} km</strong>
-          </p>
-          <p className="flex items-center gap-1">
-            <FiClock /> {t.duration}:{' '}
-            <strong>{routeInfo.duration} min</strong>
-          </p>
-          <p className="flex items-center gap-1">
-            <FiMapPin /> {t.steps}: <strong>{routeInfo.steps}</strong>
-          </p>
+          {routeInfo && (
+            <div className="text-sm text-white p-2 rounded shadow-inner space-y-1">
+              <p className="flex items-center gap-1">
+                <LuRuler /> Distance: <strong>{routeInfo.distance} km</strong>
+              </p>
+              <p className="flex items-center gap-1">
+                <FiClock /> {t.duration}: <strong>{routeInfo.duration} min</strong>
+              </p>
+              <p className="flex items-center gap-1">
+                <FiMapPin /> {t.steps}: <strong>{routeInfo.steps}</strong>
+              </p>
+            </div>
+          )}
         </div>
       )}
-    </div>
-  )}
-</>
+    </>
   );
 };
 

@@ -101,7 +101,7 @@ const languages = [
                 to="/map"
                 className="hover:text-blue-200 transition-colors px-3 py-2 rounded-lg"
               >
-                Carte
+          {t.card}
               </Link>
               
               {/* Profile Button */}
@@ -111,7 +111,7 @@ const languages = [
                   className="flex items-center space-x-2 hover:text-blue-200 transition-colors"
                 >
                   <FaUser className="text-lg" />
-                  <span>Profil</span>
+                  <span>{t.profile}</span>
                 </button>
 
                 <AnimatePresence>
@@ -125,19 +125,19 @@ const languages = [
                       className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-50"
                     >
                       <div className="p-4 bg-blue-700 text-white">
-                        <h3 className="font-bold">Mon Compte</h3>
+                        <h3 className="font-bold">{t.myAccount}</h3>
                       </div>
                       <div className="p-4 text-gray-800">
                         <div className="mb-3">
-                          <p className="text-sm font-medium text-gray-500">Nom d'utilisateur</p>
+                          <p className="text-sm font-medium text-gray-500">{t.username}</p>
                           <p className="font-semibold">{user?.username || "Non disponible"}</p>
                         </div>
                         <div className="mb-3">
-                          <p className="text-sm font-medium text-gray-500">Téléphone</p>
+                          <p className="text-sm font-medium text-gray-500">{t.phoneNumber}</p>
                           <p className="font-semibold">{user?.phone || "Non disponible"}</p>
                         </div>
                         <div className="mb-3">
-                          <p className="text-sm font-medium text-gray-500">Email</p>
+                          <p className="text-sm font-medium text-gray-500">{t.email}</p>
                           <p className="font-semibold">{user?.email || "Non disponible"}</p>
                         </div>
                       </div>
@@ -147,7 +147,7 @@ const languages = [
                           className="flex items-center justify-center w-full px-4 py-2 text-sm text-white bg-red-500 rounded-lg hover:bg-red-600 transition-colors"
                         >
                           <FaSignOutAlt className="mr-2" />
-                          Déconnexion
+                          {t.logout}
                         </button>
                       </div>
                     </motion.div>
@@ -161,7 +161,7 @@ const languages = [
                 to="/register"
                 className="px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
               >
-                S'inscrire
+          {t.register}
               </Link>
               <Link
                 to="/login"
@@ -213,14 +213,14 @@ const languages = [
                     className="block px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     onClick={toggleMobileMenu}
                   >
-                    Carte
+                    {t.card}
                   </Link>
                   <button
                     onClick={toggleProfile}
                     className="flex items-center w-full px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-left"
                   >
                     <FaUser className="mr-2" />
-                    Profil
+                    {t.profile}
                   </button>
                   {showProfile && (
                     <motion.div
@@ -230,11 +230,11 @@ const languages = [
                       className="ml-4 mb-2 p-3 bg-blue-900 rounded-lg"
                     >
                       <div className="mb-2">
-                        <p className="text-sm text-blue-200">Nom d'utilisateur</p>
+                        <p className="text-sm text-blue-200">{t.username}</p>
                         <p className="font-semibold">{userInfo?.username || "Non disponible"}</p>
                       </div>
                       <div className="mb-2">
-                        <p className="text-sm text-blue-200">Téléphone</p>
+                        <p className="text-sm text-blue-200">{t.phoneNumber}</p>
                         <p className="font-semibold">{userInfo?.phone || "Non disponible"}</p>
                       </div>
                     </motion.div>
@@ -244,7 +244,7 @@ const languages = [
                     className="flex items-center w-full px-3 py-2 rounded-lg hover:bg-red-700 transition-colors text-left"
                   >
                     <FaSignOutAlt className="mr-2" />
-                    Déconnexion
+                    {t.logout}
                   </button>
                 </>
               ) : (
@@ -254,14 +254,14 @@ const languages = [
                     className="block px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     onClick={toggleMobileMenu}
                   >
-                    S'inscrire
+                   {t.register}
                   </Link>
                   <Link
                     to="/login"
                     className="block px-3 py-2 bg-white text-blue-900 rounded-lg font-semibold text-center"
                     onClick={toggleMobileMenu}
                   >
-                    Connexion
+                    {t.login}
                   </Link>
                 </>
               )}
