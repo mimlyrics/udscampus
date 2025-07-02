@@ -7,7 +7,12 @@ import {
 } from 'react-icons/fi';
 import { useCampus } from '../context/AppProvider';
 import { LuRouter, LuRuler } from 'react-icons/lu';
-import { FaPencil, FaComputerMouse } from 'react-icons/fa6';
+import {
+  FiCornerLeftDown, FiCornerRightDown,
+} from 'react-icons/fi';
+import {
+  MdStraight, MdTurnLeft, MdLocationOn
+} from 'react-icons/md';
 
 const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage }) => {
   const map = useMap();
@@ -18,18 +23,15 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
 
   const { t, lang } = useCampus();
 
-  const [mode, setMode] = useState('click'); // Default mode is now 'click'
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
+  const [mode, setMode] = useState('click');
   const [clickPoints, setClickPoints] = useState([]);
   const [routeInfo, setRouteInfo] = useState(null);
 
-  const parseCoords = (str) => {
-    const parts = str.split(',').map(s => parseFloat(s.trim()));
-    return parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])
-      ? L.latLng(parts[0], parts[1])
-      : null;
-  };
+  useEffect(() => {
+    if (userLocation && !localStorage.getItem('userLocation')) {
+      localStorage.setItem('userLocation', JSON.stringify(userLocation));
+    }
+  }, [userLocation]);
 
   const handleMapClick = (e) => {
     if (mode === 'click') {
@@ -40,50 +42,36 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
         }
         return updated.length > 2 ? [e.latlng] : updated;
       });
+    } else if (mode === 'current') {
+      const stored = localStorage.getItem('userLocation');
+      const current = stored ? JSON.parse(stored) : null;
+      if (!current) {
+        setErrRoutingMessage('Position actuelle introuvable.');
+        setTimeout(() => setErrRoutingMessage(false), 3000);
+        return;
+      }
+      handleRoute(L.latLng(current.lat, current.lng), e.latlng);
     }
   };
 
   useEffect(() => {
-    if (mode === 'click') {
-      map.on('click', handleMapClick);
-    } else {
-      map.off('click', handleMapClick);
-    }
-    return () => {
-      map.off('click', handleMapClick);
-    };
+    map.on('click', handleMapClick);
+    return () => map.off('click', handleMapClick);
   }, [mode]);
 
-  const handleRoute = (customStart = null, customEnd = null) => {
+  const handleRoute = (origin, destination) => {
     if (routingControlRef.current) {
-      map.removeControl(routingControlRef.current);
+      try {
+        map.removeControl(routingControlRef.current);
+      } catch (err) {
+        console.warn("Erreur lors du retrait du contrôle :", err);
+      }
       routingControlRef.current = null;
       setRouteInfo(null);
     }
 
-    let origin, destination;
-
-    if (mode === 'current') {
-      if (!userLocation || !end) {
-        setErrRoutingMessage('Provide destination.');
-        return;
-      }
-      origin = L.latLng(userLocation.lat, userLocation.lng);
-      destination = parseCoords(end);
-    } else if (mode === 'manual') {
-      origin = parseCoords(start);
-      destination = parseCoords(end);
-    } else if (mode === 'click') {
-      if (!customStart || !customEnd) {
-        setErrRoutingMessage('Click two points on the map.');
-        return;
-      }
-      origin = customStart;
-      destination = customEnd;
-    }
-
-    if (!origin || !destination) {
-      setErrRoutingMessage('Coordonnées invalides. Utilisez le format (lat,lng)');
+    if (!map || !origin || !destination) {
+      setErrRoutingMessage("Carte non prête ou coordonnées invalides.");
       setTimeout(() => setErrRoutingMessage(false), 3000);
       return;
     }
@@ -94,16 +82,23 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
       draggableWaypoints: true,
       addWaypoints: false,
       fitSelectedRoutes: true,
-      serviceUrl: 'https://router.project-osrm.org/route/v1',
       show: false,
+      language: 'fr',
+      router: new L.Routing.OSRMv1({
+        serviceUrl: 'https://router.project-osrm.org/route/v1',
+        language: 'fr',
+      }),
     })
       .on('routesfound', function (e) {
         const route = e.routes[0];
         const summary = route.summary;
+        const instructions = route.instructions?.map(i => i.text) || [];
+
         setRouteInfo({
           distance: (summary.totalDistance / 1000).toFixed(2),
           duration: (summary.totalTime / 60).toFixed(1),
-          steps: route.instructions?.length || route?.coordinates.length || 'N/A',
+          steps: `${instructions.length} ${t.steps}`,
+          instructions
         });
       })
       .on('routingerror', function (e) {
@@ -112,7 +107,6 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
       })
       .addTo(map);
 
-    // Blinking origin marker
     if (markerRef.current) {
       markerRef.current.setLatLng(origin);
     } else {
@@ -143,15 +137,22 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    setStart('');
-    setEnd('');
     setClickPoints([]);
     setRouteInfo(null);
   };
 
+  const getIconForInstruction = (text) => {
+    const lower = text.toLowerCase();
+    if (lower.includes('gauche')) return <FiCornerLeftDown className="text-red-600" />;
+    if (lower.includes('droite')) return <FiCornerRightDown className="text-blue-600" />;
+    if (lower.includes('demi-tour')) return <MdTurnLeft className="text-orange-600" />;
+    if (lower.includes('continuez') || lower.includes('tout droit')) return <MdStraight className="text-gray-800" />;
+    if (lower.includes('destination')) return <MdLocationOn className="text-pink-600" />;
+    return <MdStraight className="text-gray-500" />;
+  };
+
   return (
     <>
-      {/* Toggle Button */}
       <button
         onClick={() => setShowRouteModal(!showRouteModal)}
         className="absolute mt-36 left-1 z-[1001] bg-white rounded-full p-2 shadow-md hover:scale-105 transition"
@@ -164,7 +165,6 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
         )}
       </button>
 
-      {/* Modal */}
       {showRouteModal && (
         <div className="absolute mt-40 top-1 left-1 z-[1000] w-[50%] md:w-[90%] max-w-xs md:max-w-sm bg-gradient-to-r from-[rgba(34,34,56,0.4)] to-[rgba(9,9,49,0.9)] backdrop-blur-md p-4 rounded-xl shadow-xl space-y-3 border border-gray-300">
           <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -182,76 +182,51 @@ const RoutingControl = ({ userLocation, errRoutingMessage, setErrRoutingMessage 
               className="w-full mt-1 p-2 border border-gray-100 rounded text-sm"
             >
               <option value="current">{t.currentToDestination}</option>
-              <option value="manual">
-                <FaPencil className="text-slate-900 text-xl inline mr-1" />
-                {t.startToDestination}
-              </option>
-              <option value="click">
-                <FaComputerMouse className="text-slate-900 text-xl inline mr-1" />
-                {t.clickPointsOnTheMap}
-              </option>
+              <option value="click">{t.clickPointsOnTheMap}</option>
             </select>
           </div>
-
-          {mode === 'manual' && (
-            <input
-              type="text"
-              value={start}
-              onChange={(e) => setStart(e.target.value)}
-              placeholder="Start (lat,lng)"
-              className="w-full border border-gray-100 text-indigo-700 p-2 rounded text-sm focus:ring-2 focus:ring-blue-500"
-            />
-          )}
-
-          {mode !== 'click' && (
-            <input
-              type="text"
-              value={end}
-              onChange={(e) => setEnd(e.target.value)}
-              placeholder="End (lat,lng)"
-              className="w-full border border-gray-100 text-indigo-700 p-2 rounded text-sm focus:ring-2 focus:ring-blue-500"
-            />
-          )}
 
           {mode === 'click' && (
             <p className="text-sm text-white flex items-center gap-1">
               <FiMousePointer />
-              Click {2 - clickPoints.length} point(s) on the map
+              Cliquez sur {2 - clickPoints.length} point(s) sur la carte
+            </p>
+          )}
+
+          {mode === 'current' && (
+            <p className="text-sm text-white flex items-center gap-1">
+              <FiMousePointer />
+              Cliquez sur votre destination sur la carte
             </p>
           )}
 
           <div className="flex flex-col sm:flex-row gap-2">
             <button
-              onClick={() => handleRoute()}
-              disabled={mode === 'click'}
-              className={`w-full flex items-center justify-center gap-2 ${
-                mode === 'click'
-                  ? 'bg-gray-300 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700'
-              } text-white py-2 rounded transition font-semibold`}
-            >
-              <FiNavigation /> {t.calculateRoute}
-            </button>
-
-            <button
               onClick={handleClear}
-              className="w-full flex items-center justify-center gap-2 text-white py-2 rounded hover:bg-gray-300 transition font-semibold"
+              className="w-full flex items-center justify-center gap-2 text-white py-2 rounded hover:bg-gray-300 transition font-semibold bg-red-600 hover:bg-red-700"
             >
               <FiX /> Effacer
             </button>
           </div>
 
           {routeInfo && (
-            <div className="text-sm text-white p-2 rounded shadow-inner space-y-1">
-              <p className="flex items-center gap-1">
-                <LuRuler /> Distance: <strong>{routeInfo.distance} km</strong>
+            <div className="text-sm text-black bg-yellow-200 p-3 rounded shadow-inner space-y-2 font-bold max-h-80 overflow-auto">
+              <p className="flex items-center gap-2">
+                <LuRuler className="text-purple-700" /> Distance: <span>{routeInfo.distance} km</span>
               </p>
-              <p className="flex items-center gap-1">
-                <FiClock /> {t.duration}: <strong>{routeInfo.duration} min</strong>
+              <p className="flex items-center gap-2">
+                <FiClock className="text-green-700" /> {t.duration}: <span>{routeInfo.duration} min</span>
               </p>
-              <p className="flex items-center gap-1">
-                <FiMapPin /> {t.steps}: <strong>{routeInfo.steps}</strong>
+              <p className="flex items-center gap-2">
+                <FiMapPin className="text-blue-700" /> {routeInfo.steps}
               </p>
+              <ul className="space-y-1 list-disc list-inside">
+                {routeInfo.instructions?.map((step, i) => (
+                  <li key={i} className="flex items-center gap-2 text-black">
+                    {getIconForInstruction(step)} <span>{step}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>

@@ -15,6 +15,7 @@ L.Icon.Default.mergeOptions({
 
 const UserLocationMap = () => {
   const [position, setPosition] = useState(null);
+  console.log('positon')
 
   useEffect(() => {
     if (!navigator.geolocation) {

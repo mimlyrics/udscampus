@@ -76,7 +76,7 @@ const languages = [
 
   return (
     <div className="fixed top-0 left-0 right-0 z-50">
-      {userLocation && <UserLocationMap/>}
+      {!userLocation && <UserLocationMap/>}
       {/* Main Navbar */}
       <nav
         id="header"

@@ -1,12 +1,25 @@
-import React from 'react';
+import React, {useState} from 'react';
 import facultyColors from '../constants/facultyColor';
 import anyImage from "../../../assets/martinique-4900895_1920.jpg"
 import './Sidebar.css';
 import { useCampus } from '../context/AppProvider';
 const Sidebar = ({ selectedBuilding, routingEnabled, setRoutingEnabled, selectedFaculty, setSelectedFaculty, theme }) => {
   const {t, lang, setLang } = useCampus();
+  const [searchFaculty, setSearchFaculty] = useState("");
+
+  console.log(facultyColors);
+const onChangeFaculty = (e) => {
+  const value = e.target.value;
+  setSearchFaculty(value);
+  const match = Object.keys(facultyColors).find(faculty =>
+    faculty.toLowerCase().includes(value.toLowerCase().trim())
+  );
+  setSelectedFaculty(match || '');
+};
+
   console.log(lang);
   console.log(t);
+  console.log(Object.keys(facultyColors))
   return (
     <div className={`w-full md:w-96 p-4 bg-white border-r border-gray-200 overflow-y-auto sidebar-container  ${theme.legendBg} ${theme.legendText}`}>
       <h2 className="text-lg font-semibold mb-4">{t.buildingInfo}</h2>
@@ -14,7 +27,7 @@ const Sidebar = ({ selectedBuilding, routingEnabled, setRoutingEnabled, selected
       <div className='text-center mx-3 py-3 font-poppins text-white rounded-md bg-gradient-to-r from-yellow-500 to-orange-800'>
         {t.welcome}
       </div>
-      
+     
       {selectedBuilding ? (
         <div className="mb-6 p-4 ">
           <h3 className="font-bold text-purple-900 ">{t.name} {selectedBuilding.name}</h3>
@@ -28,6 +41,11 @@ const Sidebar = ({ selectedBuilding, routingEnabled, setRoutingEnabled, selected
       ) : (
         <p className="text-lg mb-4 text-purple-800 ">{t.selectBuilding}</p>
       )}
+
+      <div className=''>
+        <input value={searchFaculty} onKeyDown={e=>e.key == 'Enter' ? onChangeFaculty : null} onChange={onChangeFaculty} className='px-3 py-2  border-0 border-purple-500 outline-dashed rounded-md' placeholder='search...'/>
+        <button onClick={onChangeFaculty}  className='border-0 outline-2 bg-indigo-600 text-lg p-3 text-white cursor-pointer rounded-md '>Search</button>
+      </div>
 
       {/* Faculty Filter */}
       <div className="mb-4">

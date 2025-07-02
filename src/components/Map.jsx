@@ -7,7 +7,8 @@ import Sidebar from './utility/SideBar';
 import RoutingControl from './utility/RoutingControl';
 import facultyColors from './constants/facultyColor';
 import translations from './constants/translations';
-
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+import { FiChevronUp, FiChevronDown } from 'react-icons/fi';
 // Define custom font classes
 const fontStyles = {
   comic: 'font-comic',
@@ -81,6 +82,7 @@ const Map = () => {
   const [selectedFaculty, setSelectedFaculty] = useState('');
   const [currentTheme, setCurrentTheme] = useState('vibrant');
   const [currentFont, setCurrentFont] = useState('sans');
+  const [isLegendOpen, setIsLegendOpen] = useState(false);
   const mapRef = useRef();
   const t = translations[lang];
   //console.log(t);
@@ -127,6 +129,8 @@ const { lat, lng } = userLocation ?? { lat: 3.848, lng: 11.502 };
 const onEachFeature = (feature, layer) => {
   const { name, Faculty, A_propos, IMAGE } = feature.properties;
   const coords = layer.getBounds().getCenter();
+  const fillColor = facultyColors[Faculty?.trim()] || facultyColors.default;
+
 
   layer.on("click", () => {
     if (routingEnabled) {
@@ -160,14 +164,14 @@ const onEachFeature = (feature, layer) => {
       const labelFaculty = t?.faculty || "Faculty";
       const labelBuilding = t?.building || "Building";
       const imageUrl = IMAGE || "https://via.placeholder.com/150";
+const popupContent = `
+  <div class="${fontClass}">
+    <strong class="text-lg" style="color:${fillColor}">${labelFaculty}: ${Faculty || "N/A"}</strong><br/>
+    <span class="font-bold">${labelBuilding}:</span> ${name || "N/A"}<br/>
+    <img src="${imageUrl}" class="w-full h-24 object-cover rounded-lg mt-2" />
+  </div>
+`;
 
-      const popupContent = `
-        <div class="${fontClass}">
-          <strong class="text-lg">${labelFaculty}: ${Faculty || "N/A"}</strong><br/>
-          <span class="font-bold">${labelBuilding}:</span> ${name || "N/A"}<br/>
-          <img src="${imageUrl}" class="w-full h-24 object-cover rounded-lg mt-2" />
-        </div>
-      `;
 
       L.popup()
         .setLatLng(coords)
@@ -186,8 +190,9 @@ const onEachFeature = (feature, layer) => {
     if (key === "nature") setCurrentFont("comic");
     else if (key === "classic") setCurrentFont("serif");
     else setCurrentFont("sans");
-    
   }
+
+  console.log(buildingGeojson);
 
   return (
     <div>
@@ -229,7 +234,7 @@ const onEachFeature = (feature, layer) => {
       <div className="relative h-[200vh] md:flex-1 md:h-auto">
         {/* Theme & Font Buttons (unchanged) */}
         <div className="absolute top-4 left-4 z-50 flex flex-col gap-2">
-          <div className="flex gap-2 flex-wrap">
+          {/*<div className="flex gap-2 flex-wrap">
             {Object.entries(themes).map(([key, themeObj]) => (
               <button
                 key={key}
@@ -264,7 +269,7 @@ const onEachFeature = (feature, layer) => {
                 ))}
               </select>
             </div>
-          </div>
+          </div>*/}
         </div>
 
         {/* === The Leaflet MapContainer === */}
@@ -295,18 +300,18 @@ const onEachFeature = (feature, layer) => {
               }}
 
               style={(feature) => {
-                const normalizedFaculty = (
-                  feature.properties.Faculty || ""
-                ).trim();
-                return {
-                  color: "white",
-                  weight: 1,
-                  fillColor:
-                    facultyColors[normalizedFaculty] ||
-                    facultyColors.default,
-                  fillOpacity: 0.85
-                };
+                  const normalizedFaculty = (feature.properties.Faculty || "").trim();
+                  const baseColor = facultyColors[normalizedFaculty] || facultyColors.default;
+                  const isSelected = selectedFaculty && normalizedFaculty === selectedFaculty.trim();
+
+                  return {
+                    color: isSelected ? '#FFD700' /* gold outline */ : 'white',
+                    weight: isSelected ? 3 : 1,
+                    fillColor: baseColor,
+                    fillOpacity: isSelected ? 1 : 0.7,
+                  };
               }}
+
 
               onEachFeature={onEachFeature}
             />
@@ -341,33 +346,49 @@ const onEachFeature = (feature, layer) => {
           {routingEnabled && <RoutingControl errRoutingMessage={errRoutingMessage} setErrRoutingMessage={setErrRoutingMessage} userLocation={userLocation} />}
         </MapContainer>
 
-        {/* === Desktop Legend (hidden on mobile) === */}
-        <motion.div
-          className={`
-            absolute z-30 top-2 right-2
-            hidden md:block 
-            ${theme.legendBg} ${theme.legendText} 
-            p-2 rounded-lg border-l-4 border-purple-500 
-            max-w-xs shadow-xl 
-            ${fontStyles[currentFont]}
-          `}
-          initial={{ x: 100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <h3 className="text-lg font-bold mb-2">{t.facultyLegend}</h3>
-          {Object.entries(facultyColors)
-            .filter(([key]) => key !== "default")
-            .map(([key, color]) => (
-              <div key={key} className="flex items-center gap-3 mb-2">
-                <div
-                  style={{ background: color }}
-                  className="w-6 h-6 rounded-full border border-white"
-                ></div>
-                <span className="text-sm font-medium">{key}</span>
-              </div>
-            ))}
-        </motion.div>
+<motion.div
+  className={`
+    absolute z-30 top-2 right-2
+    hidden md:block 
+    ${theme.legendBg} ${theme.legendText} 
+    p-2 rounded-lg border-l-4 border-purple-500 
+    max-w-xs shadow-xl 
+    ${fontStyles[currentFont]}
+  `}
+  initial={{ x: 100, opacity: 0 }}
+  animate={{ x: 0, opacity: 1 }}
+  transition={{ delay: 0.5 }}
+>
+  <div className="flex justify-between items-center cursor-pointer select-none" onClick={() => setIsLegendOpen(!isLegendOpen)}>
+    <h3 className="text-lg font-bold mb-2">{t.facultyLegend}</h3>
+    {isLegendOpen ? (
+      <FiChevronUp className="text-xl" aria-label="Collapse legend" />
+    ) : (
+      <FiChevronDown className="text-xl" aria-label="Expand legend" />
+    )}
+  </div>
+  
+  {isLegendOpen && (
+    <div>
+      {Object.entries(facultyColors)
+        .filter(([key]) => key !== "default")
+        .map(([key, color]) => (
+          <div key={key} className="flex items-center gap-3 mb-2">
+            <div
+              style={{ background: color }}
+              className={`w-6 h-6 rounded-full border border-white
+                ${selectedFaculty === key ? "ring-4 ring-yellow-400" : ""}
+              `}
+            ></div>
+            <span className={`text-sm font-medium ${selectedFaculty === key ? "font-bold" : ""}`}>
+              {key}
+            </span>
+          </div>
+        ))}
+    </div>
+  )}
+</motion.div>
+
 
         {/* === Mobile Legend (collapsible) === */}
         <div className="absolute bottom-4 right-4 z-20 md:hidden">

@@ -119,14 +119,14 @@ const Home = () => {
               UDS Campus
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 max-w-2xl">
-              {t.headerSubtitle}
+              {t.headerText}
             </p>
           </motion.div>
         </header>
 
         {/* Contenu principal */}
-        <main className="flex-grow max-w-7xl mx-auto w-full px-6 py-12 md:py-16">
-          <section className="text-center mb-16 max-w-4xl mx-auto">
+        <main className="w-[100vw]   ">
+          <section className="text-center mb-16 mt-8 mx-40 ">
             <motion.h2
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -135,8 +135,8 @@ const Home = () => {
             >
               {t.heroSectionTitle}
             </motion.h2>
-            <p className="text-lg md:text-xl leading-relaxed text-gray-700 max-w-3xl mx-auto">
-              {t.heroSectionParagraph}
+            <p className="text-lg md:text-xl text-gray-700 mx-10">
+              {t.headersubText}
             </p>
           </section>
 
