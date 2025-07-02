@@ -11,7 +11,7 @@ import { useCampus } from "./context/AppProvider";
 const Navbar = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [errMsg, setErrMsg] = useState("");
+  const [errMsg, setErrMsg] = useState(false);
   const { token, userInfo } = useSelector((state) => state.auth) || {};
   const [logOutApiCall] = useLogoutMutation();
   const dispatch = useDispatch();
@@ -65,6 +65,9 @@ const languages = [
       navigate("/");
     } catch (err) {
       setErrMsg(err?.data?.message || "Échec de la déconnexion");
+      setTimeout(() => {
+        setErrMsg(false);
+      }, [3000])
     }
   };
 
@@ -80,7 +83,8 @@ const languages = [
       {/* Main Navbar */}
       <nav
         id="header"
-        className="flex items-center justify-between px-4 py-3 transition-all duration-300 bg-blue-900 text-white"
+        className="flex items-center justify-between px-4 py-3 transition-all duration-300
+         bg-blue-900 text-white"
       >
         {/* Logo and Brand */}
         <div className="flex items-center">
@@ -113,7 +117,7 @@ const languages = [
                   <FaUser className="text-lg" />
                   <span>{t.profile}</span>
                 </button>
-
+                    
                 <AnimatePresence>
                   {showProfile && (
                     <motion.div
@@ -122,7 +126,7 @@ const languages = [
                       exit="hidden"
                       variants={profileVariants}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-50"
+                      className="absolute text-white right-0 mt-2 w-64 bg-white rounded-lg shadow-xl overflow-hidden z-50"
                     >
                       <div className="p-4 bg-blue-700 text-white">
                         <h3 className="font-bold">{t.myAccount}</h3>
@@ -217,9 +221,9 @@ const languages = [
                   </Link>
                   <button
                     onClick={toggleProfile}
-                    className="flex items-center w-full px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors text-left"
+                    className="flex items-center w-full px-3 py-2 rounded-lg bg-teal-500 text-white hover:bg-teal-700 transition-colors text-left"
                   >
-                    <FaUser className="mr-2" />
+                    <FaUser className="mr-2 " />
                     {t.profile}
                   </button>
                   {showProfile && (
@@ -227,21 +231,20 @@ const languages = [
                       initial="hidden"
                       animate="visible"
                       variants={profileVariants}
-                      className="ml-4 mb-2 p-3 bg-blue-900 rounded-lg"
+                      className="ml-4 mb-2 p-3 text-lg text-white bg-blue-900 rounded-lg"
                     >
                       <div className="mb-2">
-                        <p className="text-sm text-blue-200">{t.username}</p>
-                        <p className="font-semibold">{userInfo?.username || "Non disponible"}</p>
+                        <p className=" text-blue-200">{t.username}: {user?.username || "Non disponible"}</p>
+                        <p className=" text-blue-200">phone: {user?.phone || "Non disponible"}</p>
+                        <p className=" text-blue-200">email: {user?.email || "Non disponible"}</p>
+                        
                       </div>
-                      <div className="mb-2">
-                        <p className="text-sm text-blue-200">{t.phoneNumber}</p>
-                        <p className="font-semibold">{userInfo?.phone || "Non disponible"}</p>
-                      </div>
+
                     </motion.div>
                   )}
                   <button
                     onClick={handleLogout}
-                    className="flex items-center w-full px-3 py-2 rounded-lg hover:bg-red-700 transition-colors text-left"
+                    className="flex items-center w-full px-3 py-2 rounded-lg bg-red-500 text-white hover:bg-red-700 transition-colors text-left"
                   >
                     <FaSignOutAlt className="mr-2" />
                     {t.logout}

@@ -83,8 +83,8 @@ const Login = () => {
       {success ? <h1 className="font-medium text-center my-3 text-xl text-blue-800 md:text-lg ">{success}</h1> : null}
       {hi ? null : null}
         <p className="mb-3 mt-2 text-center">
-          {t.noAccount} ?{" "}
-          <Link to="/register" className="bg-amber-200 rounded">
+          Vous n'avez pas un compte
+          <Link to="/register" className="bg-indigo-300 mx-2 text-white rounded-md hover:rounded-lg hover:bg-indigo-500 p-2">
             Créer un compte
           </Link>
         </p>

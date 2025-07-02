@@ -126,7 +126,7 @@ const Home = () => {
 
         {/* Contenu principal */}
         <main className="w-[100vw]   ">
-          <section className="text-center mb-16 mt-8 mx-40 ">
+          <section className="text-center mb-16 mt-8 mx-4 md:mx-32 ">
             <motion.h2
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -135,7 +135,7 @@ const Home = () => {
             >
               {t.heroSectionTitle}
             </motion.h2>
-            <p className="text-lg md:text-xl text-gray-700 mx-10">
+            <p className="text-lg md:text-xl  text-gray-700 line-clamp-6">
               {t.headersubText}
             </p>
           </section>

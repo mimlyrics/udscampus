@@ -51,7 +51,7 @@ const UserLocationMap = () => {
     <MapContainer
       center={position || [0, 0]}
       zoom={position ? 15 : 2}
-      style={{ height: "0px", width: "0%" }}
+      style={{ height: "5px", width: "5%" }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {position && <Marker position={position} />}
